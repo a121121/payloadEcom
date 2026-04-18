@@ -21,6 +21,7 @@ import { Pages } from '@/collections/Pages'
 import { Users } from '@/collections/Users'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
+import { FontConfig } from './globals/Fontconfig'
 import { plugins } from './plugins'
 
 const filename = fileURLToPath(import.meta.url)
@@ -81,7 +82,7 @@ export default buildConfig({
   }),
   //email: nodemailerAdapter(),
   endpoints: [],
-  globals: [Header, Footer], //site wide banner alerts go here
+  globals: [Header, Footer, FontConfig], //site wide banner alerts go here
   plugins,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

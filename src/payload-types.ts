@@ -131,10 +131,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'font-config': FontConfig;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'font-config': FontConfigSelect<false> | FontConfigSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1861,6 +1863,59 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "font-config".
+ */
+export interface FontConfig {
+  id: number;
+  /**
+   * Applied to all body text, paragraphs, labels, and UI elements.
+   */
+  bodyFont:
+    | 'inter'
+    | 'geist'
+    | 'roboto'
+    | 'open-sans'
+    | 'lato'
+    | 'poppins'
+    | 'nunito'
+    | 'dm-sans'
+    | 'playfair-display'
+    | 'merriweather'
+    | 'lora'
+    | 'cormorant-garamond'
+    | 'space-grotesk'
+    | 'syne'
+    | 'bebas-neue'
+    | 'outfit';
+  /**
+   * Applied to all h1–h6 headings.
+   */
+  headingFont:
+    | 'inter'
+    | 'geist'
+    | 'roboto'
+    | 'open-sans'
+    | 'lato'
+    | 'poppins'
+    | 'nunito'
+    | 'dm-sans'
+    | 'playfair-display'
+    | 'merriweather'
+    | 'lora'
+    | 'cormorant-garamond'
+    | 'space-grotesk'
+    | 'syne'
+    | 'bebas-neue'
+    | 'outfit';
+  /**
+   * Scales all text up or down relative to the default 16px base.
+   */
+  fontScale?: ('sm' | 'md' | 'lg') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1918,6 +1973,18 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "font-config_select".
+ */
+export interface FontConfigSelect<T extends boolean = true> {
+  bodyFont?: T;
+  headingFont?: T;
+  fontScale?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -1,48 +1,29 @@
 import type { ReactNode } from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
+import { FontProvider } from '@/components/FontProvider'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { ensureStartsWith } from '@/utilities/ensureStartsWith'
+import { getAllFontClasses } from '@/fonts/fonts'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
-import { GeistSans } from 'geist/font/sans'
+import { getCachedGlobal } from '@/utilities/getGlobals'
 import { GeistMono } from 'geist/font/mono'
-import React from 'react'
+import { GeistSans } from 'geist/font/sans'
+
 import './globals.css'
 
-/* const { SITE_NAME, TWITTER_CREATOR, TWITTER_SITE } = process.env
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  : 'http://localhost:3000'
-const twitterCreator = TWITTER_CREATOR ? ensureStartsWith(TWITTER_CREATOR, '@') : undefined
-const twitterSite = TWITTER_SITE ? ensureStartsWith(TWITTER_SITE, 'https://') : undefined
- */
-/* export const metadata = {
-  metadataBase: new URL(baseUrl),
-  robots: {
-    follow: true,
-    index: true,
-  },
-  title: {
-    default: SITE_NAME,
-    template: `%s | ${SITE_NAME}`,
-  },
-  ...(twitterCreator &&
-    twitterSite && {
-      twitter: {
-        card: 'summary_large_image',
-        creator: twitterCreator,
-        site: twitterSite,
-      },
-    }),
-} */
-
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  const fontConfig = await getCachedGlobal('font-config', 0)()
+
+  const bodyFont = fontConfig?.bodyFont ?? 'geist'
+  const headingFont = fontConfig?.headingFont ?? 'geist'
+  const fontScale = fontConfig?.fontScale ?? 'md'
+
   return (
     <html
-      className={[GeistSans.variable, GeistMono.variable].filter(Boolean).join(' ')}
+      className={[GeistSans.variable, GeistMono.variable, getAllFontClasses()].filter(Boolean).join(' ')}
       lang="en"
       suppressHydrationWarning
     >
@@ -52,10 +33,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body>
+        <FontProvider bodyFont={bodyFont} headingFont={headingFont} fontScale={fontScale} />
         <Providers>
           <AdminBar />
           <LivePreviewListener />
-
           <Header />
           <main>{children}</main>
           <Footer />
