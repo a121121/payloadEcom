@@ -1,7 +1,6 @@
 'use client'
 
-import type { Header } from '@/payload-types'
-
+import { LogoIcon } from '@/components/icons/logo'
 import { CMSLink } from '@/components/Link'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,34 +11,35 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import type { Header } from '@/payload-types'
 import { useAuth } from '@/providers/Auth'
 import { MenuIcon } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface Props {
   menu: Header['navItems']
+  /** Resolved logo URL from the media upload (optional) */
+  logo?: string | null
+  /** Text fallback if no logo image */
+  logoText?: string | null
 }
 
-export function MobileMenu({ menu }: Props) {
+export function MobileMenu({ menu, logo, logoText }: Props) {
   const { user } = useAuth()
-
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
 
-  const closeMobileMenu = () => setIsOpen(false)
-
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setIsOpen(false)
-      }
+      if (window.innerWidth > 768) setIsOpen(false)
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [isOpen])
+  }, [])
 
   useEffect(() => {
     setIsOpen(false)
@@ -51,18 +51,34 @@ export function MobileMenu({ menu }: Props) {
         <MenuIcon className="h-4" />
       </SheetTrigger>
 
-      <SheetContent side="left" className="px-4">
+      <SheetContent side="left" className="px-4 flex flex-col">
         <SheetHeader className="px-0 pt-4 pb-0">
-          <SheetTitle>My Store</SheetTitle>
-
+          <SheetTitle asChild>
+            <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+              {logo ? (
+                <Image
+                  src={logo}
+                  alt={logoText || 'Store logo'}
+                  width={100}
+                  height={32}
+                  className="h-7 w-auto object-contain"
+                />
+              ) : logoText ? (
+                <span className="font-semibold text-lg">{logoText}</span>
+              ) : (
+                <LogoIcon className="w-5 h-auto" />
+              )}
+            </Link>
+          </SheetTitle>
           <SheetDescription />
         </SheetHeader>
 
-        <div className="py-4">
+        {/* Nav links */}
+        <div className="py-4 flex-1">
           {menu?.length ? (
             <ul className="flex w-full flex-col">
               {menu.map((item) => (
-                <li className="py-2" key={item.id}>
+                <li className="py-2 border-b border-muted last:border-0" key={item.id}>
                   <CMSLink {...item.link} appearance="link" />
                 </li>
               ))}
@@ -70,36 +86,39 @@ export function MobileMenu({ menu }: Props) {
           ) : null}
         </div>
 
+        {/* Account section */}
         {user ? (
-          <div className="mt-4">
-            <h2 className="text-xl mb-4">My account</h2>
-            <hr className="my-2" />
-            <ul className="flex flex-col gap-2">
+          <div className="mt-auto pb-6">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              My Account
+            </h2>
+            <ul className="flex flex-col gap-2 text-sm">
               <li>
-                <Link href="/orders">Orders</Link>
+                <Link href="/orders" className="hover:underline">Orders</Link>
               </li>
               <li>
-                <Link href="/account/addresses">Addresses</Link>
+                <Link href="/account/addresses" className="hover:underline">Addresses</Link>
               </li>
               <li>
-                <Link href="/account">Manage account</Link>
+                <Link href="/account" className="hover:underline">Manage account</Link>
               </li>
-              <li className="mt-6">
-                <Button asChild variant="outline">
+              <li className="mt-4">
+                <Button asChild variant="outline" className="w-full">
                   <Link href="/logout">Log out</Link>
                 </Button>
               </li>
             </ul>
           </div>
         ) : (
-          <div>
-            <h2 className="text-xl mb-4">My account</h2>
-            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
-              <Button asChild className="w-full sm:flex-1" variant="outline">
+          <div className="mt-auto pb-6">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              My Account
+            </h2>
+            <div className="flex flex-col gap-2">
+              <Button asChild variant="outline" className="w-full">
                 <Link href="/login">Log in</Link>
               </Button>
-              <span className="text-center text-sm text-muted-foreground sm:text-base">or</span>
-              <Button asChild className="w-full sm:flex-1">
+              <Button asChild className="w-full">
                 <Link href="/create-account">Create an account</Link>
               </Button>
             </div>

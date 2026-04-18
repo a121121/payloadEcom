@@ -1792,6 +1792,18 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: number;
+  /**
+   * Choose the visual layout for your header. Changes take effect immediately on the storefront.
+   */
+  style?: ('style1' | 'style2' | 'style3') | null;
+  /**
+   * Upload your store logo. Recommended: SVG or PNG with transparent background, min 200px wide.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Shown when no logo image is uploaded. E.g. your store name.
+   */
+  logoText?: string | null;
   navItems?:
     | {
         link: {
@@ -1807,6 +1819,19 @@ export interface Header {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Toggle which UI elements appear in the header.
+   */
+  features?: {
+    showCart?: boolean | null;
+    showLogin?: boolean | null;
+    showSearch?: boolean | null;
+  };
+  announcement?: {
+    enabled?: boolean | null;
+    text?: string | null;
+    link?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1839,6 +1864,9 @@ export interface Footer {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  style?: T;
+  logo?: T;
+  logoText?: T;
   navItems?:
     | T
     | {
@@ -1852,6 +1880,20 @@ export interface HeaderSelect<T extends boolean = true> {
               label?: T;
             };
         id?: T;
+      };
+  features?:
+    | T
+    | {
+        showCart?: T;
+        showLogin?: T;
+        showSearch?: T;
+      };
+  announcement?:
+    | T
+    | {
+        enabled?: T;
+        text?: T;
+        link?: T;
       };
   updatedAt?: T;
   createdAt?: T;
