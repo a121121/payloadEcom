@@ -5,7 +5,7 @@ import './index.css'
 
 export async function Header() {
   const header = await getCachedGlobal('header', 1)()
-  console.log('HEADER DATA:', JSON.stringify(header, null, 2))
+  // console.log('HEADER DATA:', JSON.stringify(header, null, 2))
 
   return <HeaderClient header={header} />
 }

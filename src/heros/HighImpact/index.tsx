@@ -1,4 +1,5 @@
 'use client'
+
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import React, { useEffect } from 'react'
 
@@ -13,34 +14,48 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
 
   useEffect(() => {
     setHeaderTheme('dark')
-  })
+  }, [setHeaderTheme])
 
   return (
-    <div
-      className="relative -mt-[10.4rem] flex items-center justify-center text-white"
+    <section
+      className="relative -mt-[10.4rem] min-h-[80vh] flex items-center justify-center overflow-hidden text-white"
       data-theme="dark"
     >
-      <div className="container mb-8 z-10 relative flex items-center justify-center">
-        <div className="max-w-146 md:text-center">
-          {richText && <RichText className="mb-6" data={richText} enableGutter={false} />}
+      {/* Background image */}
+      {media && typeof media === 'object' && (
+        <Media
+          fill
+          priority
+          resource={media}
+          imgClassName="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+      )}
+
+      {/* Optional dark overlay */}
+      <div className="absolute inset-0 z-0 bg-black/40" />
+
+      {/* Content */}
+      <div className="container relative z-10 flex justify-center px-4">
+        <div className="w-full max-w-4xl text-center">
+          {richText && (
+            <RichText
+              className="mb-6"
+              data={richText}
+              enableGutter={false}
+            />
+          )}
+
           {Array.isArray(links) && links.length > 0 && (
-            <ul className="flex md:justify-center gap-4">
-              {links.map(({ link }, i) => {
-                return (
-                  <li key={i}>
-                    <CMSLink {...link} />
-                  </li>
-                )
-              })}
+            <ul className="flex flex-wrap justify-center gap-4">
+              {links.map(({ link }, i) => (
+                <li key={i}>
+                  <CMSLink {...link} />
+                </li>
+              ))}
             </ul>
           )}
         </div>
       </div>
-      <div className="min-h-[80vh] select-none">
-        {media && typeof media === 'object' && (
-          <Media fill imgClassName="-z-10 object-cover" priority resource={media} />
-        )}
-      </div>
-    </div>
+    </section>
   )
 }

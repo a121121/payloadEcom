@@ -440,6 +440,14 @@ export interface Page {
   id: number;
   title: string;
   publishedOn?: string | null;
+  /**
+   * Override the canonical URL for this page. Leave blank to use the default page URL.
+   */
+  canonicalUrl?: string | null;
+  /**
+   * Check this to add a noindex meta tag and exclude this page from sitemaps.
+   */
+  noIndex?: boolean | null;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
     richText?: {
@@ -478,6 +486,9 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
+  /**
+   * Build your page by adding and reordering blocks. Maximum 20 blocks per page.
+   */
   layout: (
     | CallToActionBlock
     | ContentBlock
@@ -487,6 +498,7 @@ export interface Page {
     | ThreeItemGridBlock
     | BannerBlock
     | FormBlock
+    | TestimonialsBlock
   )[];
   meta?: {
     title?: string | null;
@@ -495,7 +507,27 @@ export interface Page {
      */
     image?: (number | null) | Media;
     description?: string | null;
+    /**
+     * Paste valid JSON-LD structured data (e.g. FAQPage, BreadcrumbList, Product schema). This will be injected into the <head> as a <script type="application/ld+json"> tag.
+     */
+    structuredData?: string | null;
+    /**
+     * Override the image shown when this page is shared on social media. Recommended size: 1200×630px. Falls back to the SEO meta image if not set.
+     */
+    ogImage?: (number | null) | Media;
   };
+  /**
+   * If set, this page will issue a 301 redirect to the specified URL. Useful when retiring a page that has inbound links.
+   */
+  redirectTo?: string | null;
+  /**
+   * Apply a page-level theme class to the <body> for custom styling of specific page types.
+   */
+  pageTheme?: ('default' | 'dark' | 'light' | 'sale') | null;
+  /**
+   * Featured pages can be queried to appear in navigation spotlights, homepages, or featured sections.
+   */
+  isFeatured?: boolean | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -878,6 +910,141 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  /**
+   * Displayed above the testimonial grid/carousel, e.g. "What our customers say".
+   */
+  blockHeading?: string | null;
+  /**
+   * Optional supporting copy beneath the heading.
+   */
+  blockSubheading?: string | null;
+  /**
+   * Controls how the frontend renders this block.
+   */
+  displayStyle?: ('grid' | 'carousel' | 'masonry' | 'featured') | null;
+  /**
+   * Stock images used as avatars when a reviewer has no personal photo uploaded. Upload one for each gender option.
+   */
+  fallbackImages?: {
+    male?: (number | null) | Media;
+    female?: (number | null) | Media;
+    neutral?: (number | null) | Media;
+  };
+  /**
+   * Add individual testimonials. Each maps to a schema.org Review object.
+   */
+  testimonials?:
+    | {
+        /**
+         * Short headline for the review, e.g. "Best purchase I've made all year". Maps to schema.org Review → name.
+         */
+        title: string;
+        /**
+         * The full review text shown to visitors. Maps to schema.org Review → reviewBody. Google requires this field to be present.
+         */
+        description: string;
+        /**
+         * Rating from 1 to 5. Maps to schema.org Rating → ratingValue (worstRating=1, bestRating=5).
+         */
+        rating: number;
+        /**
+         * When the review was written. Maps to schema.org Review → datePublished. Recommended for rich results.
+         */
+        reviewDate?: string | null;
+        reviewer: {
+          /**
+           * Reviewer's display name. Maps to schema.org Person → name.
+           */
+          name: string;
+          /**
+           * Used to select the correct fallback avatar if no personal image is uploaded. Not exposed publicly.
+           */
+          gender?: ('male' | 'female' | 'neutral') | null;
+          /**
+           * Optional display title, e.g. "Verified Buyer", "CEO at Acme", "Professional Chef". Maps to schema.org Person → jobTitle.
+           */
+          jobTitle?: string | null;
+          /**
+           * Displayed as social proof, e.g. "London, UK".
+           */
+          location?: {
+            city?: string | null;
+            country?: string | null;
+          };
+          /**
+           * Reviewer's headshot or avatar. If left blank, the matching fallback image from the block settings will be used based on gender. Maps to schema.org Person → image.
+           */
+          personalImage?: (number | null) | Media;
+        };
+        /**
+         * Optional photo or video submitted alongside the review. Maps to schema.org Review → image.
+         */
+        reviewMedia?: {
+          mediaType?: ('none' | 'image' | 'video') | null;
+          /**
+           * Photo uploaded with the review (e.g. product in use).
+           */
+          image?: (number | null) | Media;
+          /**
+           * Video testimonial uploaded with the review.
+           */
+          video?: (number | null) | Media;
+          /**
+           * Alternative to uploading — paste a YouTube or Vimeo embed URL.
+           */
+          videoUrl?: string | null;
+        };
+        /**
+         * What this review is about. Required for Google Product rich results. Maps to schema.org Review → itemReviewed.
+         */
+        itemReviewed?: {
+          /**
+           * Relate this review to a product in your catalogue. When set, the product name/URL are used in the JSON-LD output automatically.
+           */
+          linkToProduct?: (number | null) | Product;
+          /**
+           * Used only if no product relation is set above — e.g. "Spring/Summer Collection" or a service name. Maps to schema.org Thing → name.
+           */
+          itemName?: string | null;
+        };
+        /**
+         * Optionally link this testimonial to a registered user account. Not exposed publicly — useful for internal verification and de-duplication.
+         */
+        linkedUser?: (number | null) | User;
+        /**
+         * Shown as a badge on the frontend ("Verified Buyer"). Also strengthens E-E-A-T signals for Google.
+         */
+        verificationStatus?: ('unverified' | 'verified_purchase' | 'verified_customer' | 'editorial') | null;
+        /**
+         * Where the original review came from. Useful for frontend badges.
+         */
+        sourcePlatform?: ('direct' | 'google' | 'trustpilot' | 'amazon' | 'facebook' | 'instagram' | 'other') | null;
+        /**
+         * Featured testimonials can be surfaced first or displayed more prominently.
+         */
+        isFeatured?: boolean | null;
+        /**
+         * Optional per-aspect scores (e.g. Quality: 5, Delivery: 4, Value: 3). Maps to schema.org Rating → reviewAspect.
+         */
+        aspectRatings?:
+          | {
+              aspect: string;
+              score: number;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -1195,6 +1362,8 @@ export interface UsersSelect<T extends boolean = true> {
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
   publishedOn?: T;
+  canonicalUrl?: T;
+  noIndex?: T;
   hero?:
     | T
     | {
@@ -1228,6 +1397,7 @@ export interface PagesSelect<T extends boolean = true> {
         threeItemGrid?: T | ThreeItemGridBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
       };
   meta?:
     | T
@@ -1235,7 +1405,12 @@ export interface PagesSelect<T extends boolean = true> {
         title?: T;
         image?: T;
         description?: T;
+        structuredData?: T;
+        ogImage?: T;
       };
+  redirectTo?: T;
+  pageTheme?: T;
+  isFeatured?: T;
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;
@@ -1357,6 +1532,72 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock_select".
+ */
+export interface TestimonialsBlockSelect<T extends boolean = true> {
+  blockHeading?: T;
+  blockSubheading?: T;
+  displayStyle?: T;
+  fallbackImages?:
+    | T
+    | {
+        male?: T;
+        female?: T;
+        neutral?: T;
+      };
+  testimonials?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        rating?: T;
+        reviewDate?: T;
+        reviewer?:
+          | T
+          | {
+              name?: T;
+              gender?: T;
+              jobTitle?: T;
+              location?:
+                | T
+                | {
+                    city?: T;
+                    country?: T;
+                  };
+              personalImage?: T;
+            };
+        reviewMedia?:
+          | T
+          | {
+              mediaType?: T;
+              image?: T;
+              video?: T;
+              videoUrl?: T;
+            };
+        itemReviewed?:
+          | T
+          | {
+              linkToProduct?: T;
+              itemName?: T;
+            };
+        linkedUser?: T;
+        verificationStatus?: T;
+        sourcePlatform?: T;
+        isFeatured?: T;
+        aspectRatings?:
+          | T
+          | {
+              aspect?: T;
+              score?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
