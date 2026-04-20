@@ -424,7 +424,7 @@ export const Testimonials: Block = {
                         {
                             name: 'score',
                             type: 'number',
-                            label: 'Score (1–5)',
+                            label: 'Score (1-5)',
                             required: true,
                             min: 1,
                             max: 5,
