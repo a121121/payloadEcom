@@ -37,7 +37,7 @@ export function generateTestimonialsJsonLd(block: TestimonialsBlock): string {
 
         const itemReviewed = productName
             ? {
-                '@type': 'Product',
+                '@type': 'Product', // change this to thing for google not to cry
                 name: productName,
             }
             : undefined

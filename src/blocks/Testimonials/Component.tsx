@@ -2,6 +2,7 @@
 
 import type { Media, TestimonialsBlock as TestimonialsBlockProps } from '@/payload-types'
 import React, { useEffect, useState } from 'react'
+import { generateTestimonialsJsonLd } from './generateTestimonialsJsonLd'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -303,8 +304,8 @@ const CarouselLayout: React.FC<{
                             onClick={() => go(i)}
                             aria-label={`Go to testimonial ${i + 1}`}
                             className={`rounded-full transition-all duration-300 ${i === active
-                                    ? 'w-6 h-2 bg-primary'
-                                    : 'w-2 h-2 bg-border hover:bg-muted-foreground'
+                                ? 'w-6 h-2 bg-primary'
+                                : 'w-2 h-2 bg-border hover:bg-muted-foreground'
                                 }`}
                         />
                     ))}
@@ -394,11 +395,19 @@ export const TestimonialsBlock: React.FC<Props> = ({
     const items = testimonials ?? []
     if (items.length === 0) return null
 
+    const jsonLd = generateTestimonialsJsonLd({ testimonials, fallbackImages, blockHeading, blockSubheading, displayStyle, blockType: 'testimonials', id: id ? String(id) : undefined } as TestimonialsBlockProps)
+
     return (
         <section
             id={id ? String(id) : undefined}
             className={`container ${className ?? ''}`}
         >
+            {jsonLd && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: jsonLd }}
+                />
+            )}
             <SectionHeader heading={blockHeading} subheading={blockSubheading} />
 
             {displayStyle === 'grid' && (
