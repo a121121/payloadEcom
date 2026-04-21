@@ -7,6 +7,7 @@ import { Banner } from '@/blocks/Banner/config'
 import { CallToAction } from '@/blocks/CallToAction/config'
 import { Carousel } from '@/blocks/Carousel/config'
 import { Content } from '@/blocks/Content/config'
+import { FAQBlock } from '@/blocks/FAQ/config'
 import { FormBlock } from '@/blocks/Form/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { Testimonials } from '@/blocks/Testimonials/config'
@@ -131,6 +132,7 @@ export const Pages: CollectionConfig = {
                 Banner,
                 FormBlock,
                 Testimonials,
+                FAQBlock
               ],
               required: true,
               admin: {

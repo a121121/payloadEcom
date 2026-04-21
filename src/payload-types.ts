@@ -499,6 +499,7 @@ export interface Page {
     | BannerBlock
     | FormBlock
     | TestimonialsBlock
+    | FAQBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1045,6 +1046,81 @@ export interface TestimonialsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock".
+ */
+export interface FAQBlock {
+  /**
+   * Optional heading rendered above the FAQ list (e.g. "Frequently asked questions").
+   */
+  title?: string | null;
+  /**
+   * Short paragraph shown between the section title and the first question.
+   */
+  description?: string | null;
+  /**
+   * Controls how the Q&A pairs are rendered on the front end.
+   */
+  displayStyle?: ('accordion' | 'list' | 'grid') | null;
+  /**
+   * Optional @id for this FAQPage entity (e.g. https://example.com/faq#faqblock). Useful when the same FAQ appears on multiple pages.
+   */
+  schemaId?: string | null;
+  /**
+   * Each item becomes one schema.org Question entity inside FAQPage.mainEntity.
+   */
+  items?:
+    | {
+        /**
+         * Maps to schema.org Question.name. Write as a full question (e.g. "How do I reset my password?").
+         */
+        question: string;
+        /**
+         * Maps to schema.org Answer.text. HTML is stripped to plain text for the JSON-LD output; the rich version is used for rendering.
+         */
+        answer: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        /**
+         * Canonical URL (or #anchor) where this answer can be found. Maps to Answer.url. Helps Google link directly to the answer.
+         */
+        answerUrl?: string | null;
+        /**
+         * Maps to Answer.upvoteCount. Optional social-proof signal for Google. Set to 0 or leave blank if not applicable.
+         */
+        upvoteCount?: number | null;
+        /**
+         * Maps to Answer.dateCreated / datePublished. Useful for freshness signals on support/evergreen FAQ content.
+         */
+        datePublished?: string | null;
+        /**
+         * Optional label to group questions (e.g. "Billing", "Shipping"). Not part of schema.org — used for filtered tabs in the renderer.
+         */
+        category?: string | null;
+        /**
+         * When using the accordion display style, this item starts expanded. Useful for the most important or most common question.
+         */
+        openByDefault?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -1398,6 +1474,7 @@ export interface PagesSelect<T extends boolean = true> {
         banner?: T | BannerBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         testimonials?: T | TestimonialsBlockSelect<T>;
+        faq?: T | FAQBlockSelect<T>;
       };
   meta?:
     | T
@@ -1596,6 +1673,30 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
               score?: T;
               id?: T;
             };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock_select".
+ */
+export interface FAQBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  displayStyle?: T;
+  schemaId?: T;
+  items?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        answerUrl?: T;
+        upvoteCount?: T;
+        datePublished?: T;
+        category?: T;
+        openByDefault?: T;
         id?: T;
       };
   id?: T;

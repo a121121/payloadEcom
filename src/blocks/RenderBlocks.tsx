@@ -3,6 +3,7 @@ import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CarouselBlock } from '@/blocks/Carousel/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
+import { FAQBlock } from '@/blocks/FAQ/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { TestimonialsBlock } from '@/blocks/Testimonials/Component'; // ← add this
@@ -22,6 +23,8 @@ const blockComponents = {
   mediaBlock: MediaBlock,
   threeItemGrid: ThreeItemGridBlock,
   testimonials: TestimonialsBlock,  // ← add this (key must match the block's slug)
+  faq: FAQBlock,
+
 }
 
 export const RenderBlocks: React.FC<{
