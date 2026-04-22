@@ -6,6 +6,7 @@ import { ContentBlock } from '@/blocks/Content/Component'
 import { FAQBlock } from '@/blocks/FAQ/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { TableBlock } from '@/blocks/Table/Component'
 import { TestimonialsBlock } from '@/blocks/Testimonials/Component'; // ← add this
 import { ThreeItemGridBlock } from '@/blocks/ThreeItemGrid/Component'
 import { toKebabCase } from '@/utilities/toKebabCase'
@@ -24,6 +25,7 @@ const blockComponents = {
   threeItemGrid: ThreeItemGridBlock,
   testimonials: TestimonialsBlock,  // ← add this (key must match the block's slug)
   faq: FAQBlock,
+  tableBlock: TableBlock,
 
 }
 

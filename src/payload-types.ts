@@ -500,6 +500,7 @@ export interface Page {
     | FormBlock
     | TestimonialsBlock
     | FAQBlock
+    | TableBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1121,6 +1122,32 @@ export interface FAQBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TableBlock".
+ */
+export interface TableBlock {
+  caption?: string | null;
+  /**
+   * Set this first. All cells are filled left-to-right, row by row.
+   */
+  columns: number;
+  hasHeaderRow?: boolean | null;
+  hasHeaderColumn?: boolean | null;
+  striped?: boolean | null;
+  compact?: boolean | null;
+  /**
+   * Add cells in reading order. The number of columns above determines where each row breaks.
+   */
+  cells: {
+    content: string;
+    align?: ('left' | 'center' | 'right') | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tableBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -1475,6 +1502,7 @@ export interface PagesSelect<T extends boolean = true> {
         formBlock?: T | FormBlockSelect<T>;
         testimonials?: T | TestimonialsBlockSelect<T>;
         faq?: T | FAQBlockSelect<T>;
+        tableBlock?: T | TableBlockSelect<T>;
       };
   meta?:
     | T
@@ -1697,6 +1725,27 @@ export interface FAQBlockSelect<T extends boolean = true> {
         datePublished?: T;
         category?: T;
         openByDefault?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TableBlock_select".
+ */
+export interface TableBlockSelect<T extends boolean = true> {
+  caption?: T;
+  columns?: T;
+  hasHeaderRow?: T;
+  hasHeaderColumn?: T;
+  striped?: T;
+  compact?: T;
+  cells?:
+    | T
+    | {
+        content?: T;
+        align?: T;
         id?: T;
       };
   id?: T;

@@ -10,6 +10,7 @@ import { Content } from '@/blocks/Content/config'
 import { FAQBlock } from '@/blocks/FAQ/config'
 import { FormBlock } from '@/blocks/Form/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { TableBlock } from '@/blocks/Table/config'
 import { Testimonials } from '@/blocks/Testimonials/config'
 import { ThreeItemGrid } from '@/blocks/ThreeItemGrid/config'
 import { hero } from '@/fields/hero'
@@ -132,7 +133,8 @@ export const Pages: CollectionConfig = {
                 Banner,
                 FormBlock,
                 Testimonials,
-                FAQBlock
+                FAQBlock,
+                TableBlock,
               ],
               required: true,
               admin: {
