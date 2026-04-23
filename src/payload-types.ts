@@ -1126,22 +1126,20 @@ export interface FAQBlock {
  */
 export interface TableBlock {
   caption?: string | null;
-  /**
-   * Set this first. All cells are filled left-to-right, row by row.
-   */
-  columns: number;
+  style?: ('dark-sleek' | 'colorful' | 'magazine' | 'minimal' | 'spreadsheet') | null;
   hasHeaderRow?: boolean | null;
   hasHeaderColumn?: boolean | null;
   striped?: boolean | null;
   compact?: boolean | null;
-  /**
-   * Add cells in reading order. The number of columns above determines where each row breaks.
-   */
-  cells: {
-    content: string;
-    align?: ('left' | 'center' | 'right') | null;
-    id?: string | null;
-  }[];
+  table?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'tableBlock';
@@ -1736,18 +1734,12 @@ export interface FAQBlockSelect<T extends boolean = true> {
  */
 export interface TableBlockSelect<T extends boolean = true> {
   caption?: T;
-  columns?: T;
+  style?: T;
   hasHeaderRow?: T;
   hasHeaderColumn?: T;
   striped?: T;
   compact?: T;
-  cells?:
-    | T
-    | {
-        content?: T;
-        align?: T;
-        id?: T;
-      };
+  table?: T;
   id?: T;
   blockName?: T;
 }

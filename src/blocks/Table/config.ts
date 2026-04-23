@@ -10,90 +10,62 @@ export const TableBlock: Block = {
             label: 'Table Caption (optional)',
         },
         {
+            name: 'style',
+            type: 'select',
+            label: 'Visual Style',
+            defaultValue: 'dark-sleek',
+            options: [
+                { label: '🌑 Dark Sleek', value: 'dark-sleek' },
+                { label: '🎨 Colorful Accent', value: 'colorful' },
+                { label: '📰 Magazine / Editorial', value: 'magazine' },
+                { label: '⬜ Clean Minimal', value: 'minimal' },
+                { label: '📊 Spreadsheet', value: 'spreadsheet' },
+            ],
+        },
+        {
             type: 'row',
             fields: [
-                {
-                    name: 'columns',
-                    type: 'number',
-                    label: 'Number of Columns',
-                    required: true,
-                    defaultValue: 3,
-                    min: 1,
-                    max: 20,
-                    admin: {
-                        description:
-                            'Set this first. All cells are filled left-to-right, row by row.',
-                        width: '33%',
-                    },
-                },
                 {
                     name: 'hasHeaderRow',
                     type: 'checkbox',
                     defaultValue: true,
                     label: 'First row is a header',
-                    admin: { width: '33%' },
+                    admin: { width: '25%' },
                 },
                 {
                     name: 'hasHeaderColumn',
                     type: 'checkbox',
                     defaultValue: false,
                     label: 'First column is a header',
-                    admin: { width: '33%' },
+                    admin: { width: '25%' },
                 },
-            ],
-        },
-        {
-            type: 'row',
-            fields: [
                 {
                     name: 'striped',
                     type: 'checkbox',
                     defaultValue: true,
                     label: 'Striped rows',
-                    admin: { width: '50%' },
+                    admin: { width: '25%' },
                 },
                 {
                     name: 'compact',
                     type: 'checkbox',
                     defaultValue: false,
                     label: 'Compact (reduced padding)',
-                    admin: { width: '50%' },
+                    admin: { width: '25%' },
                 },
             ],
         },
+
+        // ✅ SINGLE SOURCE OF TRUTH (fixes your issue)
         {
-            name: 'cells',
-            type: 'array',
-            label: 'Cells (fill left-to-right, row by row)',
-            required: true,
-            minRows: 1,
+            name: 'table',
+            type: 'json',
+            label: 'Table Data',
             admin: {
-                description:
-                    'Add cells in reading order. The number of columns above determines where each row breaks.',
                 components: {
-                    // rowLabel shows the inferred position so editors aren't lost
-                    // rowLabel: ... // customise if your Payload version supports it
+                    Field: '@/blocks/Table/TableGridEditor#TableGridEditor',
                 },
             },
-            fields: [
-                {
-                    name: 'content',
-                    type: 'text',
-                    required: true,
-                    label: 'Content',
-                },
-                {
-                    name: 'align',
-                    type: 'select',
-                    defaultValue: 'left',
-                    label: 'Align',
-                    options: [
-                        { label: 'Left', value: 'left' },
-                        { label: 'Center', value: 'center' },
-                        { label: 'Right', value: 'right' },
-                    ],
-                },
-            ],
         },
     ],
     labels: { singular: 'Table', plural: 'Tables' },
