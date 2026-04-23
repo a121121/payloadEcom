@@ -9,10 +9,12 @@ import { Carousel } from '@/blocks/Carousel/config'
 import { Content } from '@/blocks/Content/config'
 import { FAQBlock } from '@/blocks/FAQ/config'
 import { FormBlock } from '@/blocks/Form/config'
+import { ImageBlock } from '@/blocks/ImageBlock/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { TableBlock } from '@/blocks/Table/config'
 import { Testimonials } from '@/blocks/Testimonials/config'
 import { ThreeItemGrid } from '@/blocks/ThreeItemGrid/config'
+import { VideoBlock } from '@/blocks/VideoBlock/config'
 import { hero } from '@/fields/hero'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import {
@@ -135,6 +137,8 @@ export const Pages: CollectionConfig = {
                 Testimonials,
                 FAQBlock,
                 TableBlock,
+                ImageBlock,
+                VideoBlock
               ],
               required: true,
               admin: {

@@ -501,6 +501,8 @@ export interface Page {
     | TestimonialsBlock
     | FAQBlock
     | TableBlock
+    | ImageBlock
+    | VideoBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1146,6 +1148,52 @@ export interface TableBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock".
+ */
+export interface ImageBlock {
+  image: number | Media;
+  caption?: string | null;
+  altOverride?: string | null;
+  size?: ('inline' | 'wide' | 'full') | null;
+  /**
+   * If set, the image will be wrapped in an anchor tag.
+   */
+  link?: string | null;
+  /**
+   * Sets Next.js Image priority={true} — use only for images visible on page load.
+   */
+  priority: boolean;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'imageBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  source?: ('youtube' | 'vimeo' | 'local') | null;
+  videoId?: string | null;
+  localVideo?: (number | null) | Media;
+  posterImage?: (number | null) | Media;
+  caption?: string | null;
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Date the video was first published (required for Google rich results).
+   */
+  uploadDate?: string | null;
+  autoplay?: boolean | null;
+  /**
+   * Jump to this timestamp when video loads.
+   */
+  startTime?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'videoBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -1501,6 +1549,8 @@ export interface PagesSelect<T extends boolean = true> {
         testimonials?: T | TestimonialsBlockSelect<T>;
         faq?: T | FAQBlockSelect<T>;
         tableBlock?: T | TableBlockSelect<T>;
+        imageBlock?: T | ImageBlockSelect<T>;
+        videoBlock?: T | VideoBlockSelect<T>;
       };
   meta?:
     | T
@@ -1740,6 +1790,38 @@ export interface TableBlockSelect<T extends boolean = true> {
   striped?: T;
   compact?: T;
   table?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock_select".
+ */
+export interface ImageBlockSelect<T extends boolean = true> {
+  image?: T;
+  caption?: T;
+  altOverride?: T;
+  size?: T;
+  link?: T;
+  priority?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock_select".
+ */
+export interface VideoBlockSelect<T extends boolean = true> {
+  source?: T;
+  videoId?: T;
+  localVideo?: T;
+  posterImage?: T;
+  caption?: T;
+  title?: T;
+  description?: T;
+  uploadDate?: T;
+  autoplay?: T;
+  startTime?: T;
   id?: T;
   blockName?: T;
 }

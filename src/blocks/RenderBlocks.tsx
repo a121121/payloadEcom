@@ -7,12 +7,13 @@ import { FAQBlock } from '@/blocks/FAQ/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { TableBlock } from '@/blocks/Table/Component'
-import { TestimonialsBlock } from '@/blocks/Testimonials/Component'; // ← add this
+import { TestimonialsBlock } from '@/blocks/Testimonials/Component'
 import { ThreeItemGridBlock } from '@/blocks/ThreeItemGrid/Component'
 import { toKebabCase } from '@/utilities/toKebabCase'
 import React, { Fragment } from 'react'
-
 import type { Page } from '../payload-types'
+import ImageBlock from './ImageBlock/Component'
+import VideoBlock from './VideoBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -26,6 +27,8 @@ const blockComponents = {
   testimonials: TestimonialsBlock,  // ← add this (key must match the block's slug)
   faq: FAQBlock,
   tableBlock: TableBlock,
+  imageBlock: ImageBlock,
+  videoBlock: VideoBlock
 
 }
 
@@ -40,7 +43,6 @@ export const RenderBlocks: React.FC<{
     return (
       <Fragment>
         {blocks.map((block, index) => {
-          console.log(block.blockType)
           const { blockName, blockType } = block
 
           if (blockType && blockType in blockComponents) {
