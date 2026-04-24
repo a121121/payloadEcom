@@ -15,12 +15,17 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { Authors } from '@/collections/Authors'
 import { Categories } from '@/collections/Categories'
 import { Media } from '@/collections/Media'
 import { Pages } from '@/collections/Pages'
+import { Posts } from '@/collections/Posts'
+import { Tags } from '@/collections/Tags'
 import { Users } from '@/collections/Users'
+
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
+import { BlogSettings } from './globals/Blogsettings'
 import { FontConfig } from './globals/Fontconfig'
 import { plugins } from './plugins'
 
@@ -39,7 +44,7 @@ export default buildConfig({
     },
     user: Users.slug,
   },
-  collections: [Users, Pages, Categories, Media],
+  collections: [Users, Pages, Categories, Media, Posts, Authors, Tags],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
@@ -82,7 +87,7 @@ export default buildConfig({
   }),
   //email: nodemailerAdapter(),
   endpoints: [],
-  globals: [Header, Footer, FontConfig], //site wide banner alerts go here
+  globals: [Header, Footer, FontConfig, BlogSettings], //site wide banner alerts go here
   plugins,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

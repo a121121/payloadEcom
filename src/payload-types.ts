@@ -76,6 +76,9 @@ export interface Config {
     pages: Page;
     categories: Category;
     media: Media;
+    posts: Post;
+    authors: Author;
+    tags: Tag;
     forms: Form;
     'form-submissions': FormSubmission;
     addresses: Address;
@@ -109,6 +112,9 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
@@ -132,11 +138,13 @@ export interface Config {
     header: Header;
     footer: Footer;
     'font-config': FontConfig;
+    'blog-settings': BlogSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'font-config': FontConfigSelect<false> | FontConfigSelect<true>;
+    'blog-settings': BlogSettingsSelect<false> | BlogSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1340,6 +1348,212 @@ export interface Address {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  /**
+   * URL-friendly identifier. Auto-generated from title.
+   */
+  slug: string;
+  /**
+   * Determines Schema.org @type and available structured-data fields.
+   */
+  postType: 'article' | 'guide' | 'caseStudy' | 'changelog' | 'faq' | 'news' | 'techDeepDive';
+  status: 'draft' | 'published' | 'archived';
+  /**
+   * Leave blank to publish immediately when status is set to Published.
+   */
+  publishedAt?: string | null;
+  /**
+   * Override the auto-managed "updated" date for Schema.org dateModified.
+   */
+  updatedAtOverride?: string | null;
+  categories?: (number | Category)[] | null;
+  tags?: (number | Tag)[] | null;
+  authors?: (number | Author)[] | null;
+  /**
+   * Auto-calculated on save, or override manually.
+   */
+  readingTime?: number | null;
+  difficulty?: ('beginner' | 'intermediate' | 'advanced') | null;
+  /**
+   * The primary headline. Used in breadcrumbs, OG tags, and Schema.org headline.
+   */
+  title: string;
+  /**
+   * Hero image shown at the top of the post. Also used as OG image if no SEO image is set.
+   */
+  heroImage?: (number | null) | Media;
+  /**
+   * Short summary shown in post cards and as fallback meta description.
+   */
+  excerpt?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Surface related articles to readers. Also improves internal linking for SEO.
+   */
+  relatedPosts?: (number | Post)[] | null;
+  caseStudy?: {
+    client?: string | null;
+    industry?: string | null;
+    challenge?: string | null;
+    solution?: string | null;
+    result?: string | null;
+    metrics?:
+      | {
+          label: string;
+          value: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  changelog?: {
+    version?: string | null;
+    changeType?: ('feature' | 'bugfix' | 'security' | 'performance' | 'breaking' | 'deprecation')[] | null;
+  };
+  seo?: PostSeo;
+  /**
+   * Add Q&A pairs here to automatically generate FAQPage schema.
+   */
+  faqItems?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Populate these for step-by-step guides to get HowTo rich results.
+   */
+  howToSteps?:
+    | {
+        name: string;
+        text: string;
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Promoted in featured slots on the blog listing page.
+   */
+  isFeatured?: boolean | null;
+  enableComments?: boolean | null;
+  /**
+   * Adds a sponsored disclaimer and marks Schema.org sponsor.
+   */
+  sponsoredBy?: string | null;
+  /**
+   * Optional shorter title for breadcrumbs. Falls back to main title.
+   */
+  breadcrumbTitle?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  name: string;
+  slug?: string | null;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  name: string;
+  slug?: string | null;
+  avatar?: (number | null) | Media;
+  role?: string | null;
+  email?: string | null;
+  bio?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  socialLinks?:
+    | {
+        platform?: ('twitter' | 'linkedin' | 'github' | 'website' | 'youtube' | 'bluesky') | null;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Extra identity URLs for Schema.org Person entity (Wikipedia, Wikidata, etc).
+   */
+  sameAs?:
+    | {
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Link to a Payload user account so the author can log in and see their posts.
+   */
+  user?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PostSeo".
+ */
+export interface PostSeo {
+  /**
+   * Overrides the post title in search results. Keep under 60 chars.
+   */
+  title?: string | null;
+  /**
+   * Shown in search results. Keep under 160 chars.
+   */
+  description?: string | null;
+  /**
+   * Used for Open Graph and Twitter card previews. Recommended: 1200×630px.
+   */
+  image?: (number | null) | Media;
+  /**
+   * Prevent this post from appearing in search engines.
+   */
+  noIndex?: boolean | null;
+  /**
+   * Leave blank to use the default URL. Set only if this content was originally published elsewhere.
+   */
+  canonicalUrl?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
@@ -1394,6 +1608,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: number | Author;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
       } | null)
     | ({
         relationTo: 'forms';
@@ -1854,6 +2080,122 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  slug?: T;
+  postType?: T;
+  status?: T;
+  publishedAt?: T;
+  updatedAtOverride?: T;
+  categories?: T;
+  tags?: T;
+  authors?: T;
+  readingTime?: T;
+  difficulty?: T;
+  title?: T;
+  heroImage?: T;
+  excerpt?: T;
+  content?: T;
+  relatedPosts?: T;
+  caseStudy?:
+    | T
+    | {
+        client?: T;
+        industry?: T;
+        challenge?: T;
+        solution?: T;
+        result?: T;
+        metrics?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              id?: T;
+            };
+      };
+  changelog?:
+    | T
+    | {
+        version?: T;
+        changeType?: T;
+      };
+  seo?: T | PostSeoSelect<T>;
+  faqItems?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  howToSteps?:
+    | T
+    | {
+        name?: T;
+        text?: T;
+        image?: T;
+        id?: T;
+      };
+  isFeatured?: T;
+  enableComments?: T;
+  sponsoredBy?: T;
+  breadcrumbTitle?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PostSeo_select".
+ */
+export interface PostSeoSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  image?: T;
+  noIndex?: T;
+  canonicalUrl?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  avatar?: T;
+  role?: T;
+  email?: T;
+  bio?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  sameAs?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2380,6 +2722,39 @@ export interface FontConfig {
   createdAt?: string | null;
 }
 /**
+ * Global configuration for the blog: defaults, SEO, JSON-LD organisation info.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-settings".
+ */
+export interface BlogSetting {
+  id: number;
+  blogTitle?: string | null;
+  blogDescription?: string | null;
+  defaultHeroImage?: (number | null) | Media;
+  postsPerPage?: number | null;
+  /**
+   * e.g. "Acme Corp"
+   */
+  orgName?: string | null;
+  /**
+   * Recommended 112x112px or larger square image.
+   */
+  orgLogo?: (number | null) | Media;
+  orgUrl?: string | null;
+  /**
+   * These posts are always shown at the top of the blog listing.
+   */
+  featuredPosts?: (number | Post)[] | null;
+  enableRss?: boolean | null;
+  rssTitle?: string | null;
+  newsletterHeading?: string | null;
+  newsletterSubtext?: string | null;
+  newsletterForm?: (number | null) | Form;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
@@ -2450,6 +2825,28 @@ export interface FontConfigSelect<T extends boolean = true> {
   bodyFont?: T;
   headingFont?: T;
   fontScale?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-settings_select".
+ */
+export interface BlogSettingsSelect<T extends boolean = true> {
+  blogTitle?: T;
+  blogDescription?: T;
+  defaultHeroImage?: T;
+  postsPerPage?: T;
+  orgName?: T;
+  orgLogo?: T;
+  orgUrl?: T;
+  featuredPosts?: T;
+  enableRss?: T;
+  rssTitle?: T;
+  newsletterHeading?: T;
+  newsletterSubtext?: T;
+  newsletterForm?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
