@@ -79,6 +79,7 @@ export interface Config {
     posts: Post;
     authors: Author;
     tags: Tag;
+    promotions: Promotion;
     forms: Form;
     'form-submissions': FormSubmission;
     addresses: Address;
@@ -115,6 +116,7 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
+    promotions: PromotionsSelect<false> | PromotionsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
@@ -1554,6 +1556,142 @@ export interface PostSeo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promotions".
+ */
+export interface Promotion {
+  id: number;
+  /**
+   * Internal name. Customers never see this.
+   */
+  name: string;
+  /**
+   * Public-facing label shown to customers, e.g. "Mothers Day Sale 🌸"
+   */
+  label?: string | null;
+  status?: ('draft' | 'active' | 'paused' | 'expired') | null;
+  /**
+   * Higher number wins when multiple promotions are active on a product.
+   */
+  priority?: number | null;
+  type: 'percentage' | 'fixed_amount' | 'bxgy' | 'flash' | 'coupon' | 'free_shipping' | 'bundle';
+  /**
+   * For percentage: enter 30 for 30% off. For fixed: enter dollar amount.
+   */
+  discountValue?: number | null;
+  /**
+   * Cap the discount at this dollar amount (optional).
+   */
+  maxDiscountAmount?: number | null;
+  bxgy?: {
+    buyQuantity: number;
+    getQuantity: number;
+    getFreeProducts?: (number | Product)[] | null;
+  };
+  bundle?: {
+    requiredProducts?: (number | Product)[] | null;
+    bundleDiscountValue?: number | null;
+  };
+  coupon?: {
+    /**
+     * e.g. SAVE20, MOTHERSDAY
+     */
+    code: string;
+    /**
+     * Max total redemptions. Leave empty for unlimited.
+     */
+    usageLimit?: number | null;
+    /**
+     * Max uses per customer.
+     */
+    usageLimitPerUser?: number | null;
+    usageCount?: number | null;
+  };
+  appliesTo?: ('all_products' | 'specific_products' | 'specific_categories') | null;
+  products?: (number | Product)[] | null;
+  categories?: (number | Category)[] | null;
+  /**
+   * Minimum cart total (in USD) to qualify for this promotion.
+   */
+  minimumOrderAmount?: number | null;
+  /**
+   * Minimum number of items in cart to qualify.
+   */
+  minimumQuantity?: number | null;
+  customerEligibility?: ('all' | 'first_time' | 'logged_in') | null;
+  /**
+   * Promotion becomes active at this time.
+   */
+  startDate?: string | null;
+  /**
+   * Promotion automatically expires at this time.
+   */
+  endDate?: string | null;
+  flash?: {
+    /**
+     * e.g. 10 = "Order within 10 minutes to get the discount". The timer resets per session.
+     */
+    durationMinutes?: number | null;
+    showCountdown?: boolean | null;
+  };
+  /**
+   * If unchecked, only the highest-priority promotion applies.
+   */
+  stackable?: boolean | null;
+  blocks?:
+    | (
+        | {
+            heading: string;
+            body?: string | null;
+            image?: (number | null) | Media;
+            triggerOn?: ('page_load' | 'exit_intent' | 'after_seconds' | 'on_add_to_cart') | null;
+            triggerAfterSeconds?: number | null;
+            ctaLabel?: string | null;
+            ctaUrl?: string | null;
+            showOnce?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'promotionPopup';
+          }
+        | {
+            text: string;
+            /**
+             * Hex color code
+             */
+            backgroundColor?: string | null;
+            textColor?: string | null;
+            position?: ('top' | 'bottom') | null;
+            dismissible?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'promotionBanner';
+          }
+        | {
+            heading?: string | null;
+            timerType?: ('to_end_date' | 'session_duration') | null;
+            sessionDurationMinutes?: number | null;
+            expiredMessage?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'promotionCountdown';
+          }
+        | {
+            /**
+             * e.g. "🔥 Hot Deal", "20% OFF"
+             */
+            text: string;
+            backgroundColor?: string | null;
+            textColor?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'promotionBadge';
+          }
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
@@ -1620,6 +1758,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tags';
         value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'promotions';
+        value: number | Promotion;
       } | null)
     | ({
         relationTo: 'forms';
@@ -2194,6 +2336,105 @@ export interface TagsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promotions_select".
+ */
+export interface PromotionsSelect<T extends boolean = true> {
+  name?: T;
+  label?: T;
+  status?: T;
+  priority?: T;
+  type?: T;
+  discountValue?: T;
+  maxDiscountAmount?: T;
+  bxgy?:
+    | T
+    | {
+        buyQuantity?: T;
+        getQuantity?: T;
+        getFreeProducts?: T;
+      };
+  bundle?:
+    | T
+    | {
+        requiredProducts?: T;
+        bundleDiscountValue?: T;
+      };
+  coupon?:
+    | T
+    | {
+        code?: T;
+        usageLimit?: T;
+        usageLimitPerUser?: T;
+        usageCount?: T;
+      };
+  appliesTo?: T;
+  products?: T;
+  categories?: T;
+  minimumOrderAmount?: T;
+  minimumQuantity?: T;
+  customerEligibility?: T;
+  startDate?: T;
+  endDate?: T;
+  flash?:
+    | T
+    | {
+        durationMinutes?: T;
+        showCountdown?: T;
+      };
+  stackable?: T;
+  blocks?:
+    | T
+    | {
+        promotionPopup?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              image?: T;
+              triggerOn?: T;
+              triggerAfterSeconds?: T;
+              ctaLabel?: T;
+              ctaUrl?: T;
+              showOnce?: T;
+              id?: T;
+              blockName?: T;
+            };
+        promotionBanner?:
+          | T
+          | {
+              text?: T;
+              backgroundColor?: T;
+              textColor?: T;
+              position?: T;
+              dismissible?: T;
+              id?: T;
+              blockName?: T;
+            };
+        promotionCountdown?:
+          | T
+          | {
+              heading?: T;
+              timerType?: T;
+              sessionDurationMinutes?: T;
+              expiredMessage?: T;
+              id?: T;
+              blockName?: T;
+            };
+        promotionBadge?:
+          | T
+          | {
+              text?: T;
+              backgroundColor?: T;
+              textColor?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
 }

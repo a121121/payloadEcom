@@ -1,0 +1,4 @@
+Picking up the work from the previous session:
+- Forms don't work
+- Stripe needs to be integrated
+- Promotions and blogs need to be verified and fixed

@@ -151,6 +151,7 @@ export const Posts: CollectionConfig = {
                     req,
                 }),
         },
+        group: 'Blog',
     },
     hooks: {
         afterChange: [revalidatePost],

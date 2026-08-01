@@ -22,6 +22,7 @@ import { Pages } from '@/collections/Pages'
 import { Posts } from '@/collections/Posts'
 import { Tags } from '@/collections/Tags'
 import { Users } from '@/collections/Users'
+import { Promotions } from './collections/Promotions'
 
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
@@ -44,7 +45,7 @@ export default buildConfig({
     },
     user: Users.slug,
   },
-  collections: [Users, Pages, Categories, Media, Posts, Authors, Tags],
+  collections: [Users, Pages, Categories, Media, Posts, Authors, Tags, Promotions],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',

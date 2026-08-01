@@ -13,6 +13,7 @@ export const Authors: CollectionConfig = {
         plural: 'Authors',
     },
     admin: {
+        group: 'Blog',
         useAsTitle: 'name',
         defaultColumns: ['name', 'role', 'email'],
     },
